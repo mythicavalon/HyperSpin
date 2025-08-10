@@ -1,0 +1,5 @@
+Placeholder assets:
+- Images generated via dummyimage.com under their terms for placeholders
+- Sound from matthias-research/pages tennis sample; for demo only
+
+Replace with your own licensed assets before production.

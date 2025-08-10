@@ -1,0 +1,12 @@
+# dependencies
+node_modules
+**/.env
+backend/data
+**/*.log
+.DS_Store
+coverage
+.dist
+dist
+.nyc_output
+*.sqlite
+*.sqlite-journal
