@@ -1,6 +1,7 @@
 const express = require('express');
 const axios = require('axios');
 const { Purchase } = require('../models');
+const { grantItems } = require('../utils/purchases');
 
 const router = express.Router();
 
@@ -49,10 +50,14 @@ router.post('/paypal', express.json({ type: '*/*' }), async (req, res) => {
       const orderId = event.resource?.id || event.resource?.supplementary_data?.related_ids?.order_id;
       if (orderId) {
         const purchase = await Purchase.findOne({ where: { paypalOrderId: orderId } });
-        if (purchase && purchase.status !== 'COMPLETED') {
-          purchase.status = 'COMPLETED';
-          purchase.raw = { ...purchase.raw, webhookEvent: event };
-          await purchase.save();
+        if (purchase) {
+          if (purchase.status !== 'COMPLETED') {
+            purchase.status = 'COMPLETED';
+            purchase.raw = { ...purchase.raw, webhookEvent: event };
+            await purchase.save();
+          }
+          const { sequelize } = require('../models');
+          await grantItems(sequelize, purchase);
         }
       }
     }

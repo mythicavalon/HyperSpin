@@ -1,11 +1,11 @@
 const express = require('express');
 const { User, SaveState } = require('../models');
+const { authRequired } = require('../middleware/auth');
 
 const router = express.Router();
 
-router.get('/friends', async (req, res) => {
-  const { userId } = req.query;
-  if (!userId) return res.status(400).json({ error: 'Missing userId' });
+router.get('/friends', authRequired, async (req, res) => {
+  const userId = req.user.userId;
   const me = await User.findByPk(userId);
   if (!me) return res.status(404).json({ error: 'Not found' });
   const friendsFbIds = Array.isArray(me.friends) ? me.friends : [];

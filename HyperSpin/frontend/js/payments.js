@@ -3,6 +3,14 @@ function getQuery() {
   return { item: params.get('item'), user: params.get('user'), amount: params.get('amount') };
 }
 
+function getJwt() {
+  try {
+    return window.opener?.HyperSpin?.auth?.jwt || null;
+  } catch (_) {
+    return null;
+  }
+}
+
 async function getClientConfig() {
   const res = await fetch('/api/config/paypal');
   return res.json();
@@ -16,8 +24,10 @@ async function loadPayPalSdk(clientId, currency = 'USD') {
 }
 
 (async function init() {
-  const { item, user, amount } = getQuery();
-  if (!item || !user) { document.getElementById('error').textContent = 'Missing item or user'; return; }
+  const { item, amount } = getQuery();
+  if (!item) { document.getElementById('error').textContent = 'Missing item'; return; }
+  const jwt = getJwt();
+  if (!jwt) { document.getElementById('error').textContent = 'Login required'; return; }
   document.getElementById('item').textContent = `Item: ${item} ${amount ? `($${amount})` : ''}`;
   try {
     const cfg = await getClientConfig();
@@ -26,13 +36,21 @@ async function loadPayPalSdk(clientId, currency = 'USD') {
     // eslint-disable-next-line no-undef
     paypal.Buttons({
       createOrder: async () => {
-        const res = await fetch('/api/payments/create', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ itemID: item, userId: user, amount }) });
+        const res = await fetch('/api/payments/create', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${jwt}` },
+          body: JSON.stringify({ itemID: item, amount })
+        });
         const data = await res.json();
         if (!data.orderID) throw new Error('Create order failed');
         return data.orderID;
       },
       onApprove: async (data) => {
-        const res = await fetch('/api/payments/capture', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderID: data.orderID, userId: user }) });
+        const res = await fetch('/api/payments/capture', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${jwt}` },
+          body: JSON.stringify({ orderID: data.orderID })
+        });
         const ack = await res.json();
         if (ack.ok) {
           window.opener?.postMessage({ type: 'purchase_completed', itemID: item }, '*');

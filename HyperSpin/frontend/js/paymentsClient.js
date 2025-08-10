@@ -1,6 +1,6 @@
 export class PaymentsClient {
-  openPayment(itemID, userId, amount) {
-    const url = `/payments/?item=${encodeURIComponent(itemID)}&user=${encodeURIComponent(userId)}${amount ? `&amount=${encodeURIComponent(amount)}` : ''}`;
+  openPayment(itemID, amount) {
+    const url = `/payments/?item=${encodeURIComponent(itemID)}${amount ? `&amount=${encodeURIComponent(amount)}` : ''}`;
     const w = window.open(url, 'hs_payments', 'width=480,height=720');
     return new Promise((resolve) => {
       const handler = (e) => {

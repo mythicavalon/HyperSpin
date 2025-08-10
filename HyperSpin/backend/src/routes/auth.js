@@ -1,11 +1,14 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const rateLimit = require('express-rate-limit');
 const { User } = require('../models');
 const { validateFacebookToken, fetchFriends } = require('../utils/facebook');
 
 const router = express.Router();
 
-router.post('/facebook', async (req, res) => {
+const authLimiter = rateLimit({ windowMs: 60 * 1000, max: 20 });
+
+router.post('/facebook', authLimiter, async (req, res) => {
   try {
     const { accessToken } = req.body;
     if (!accessToken) return res.status(400).json({ error: 'Missing accessToken' });

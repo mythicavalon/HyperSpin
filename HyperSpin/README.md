@@ -34,16 +34,18 @@ See `backend/.env.example`.
 ## Data Models
 - `User`: id, fbId, displayName, credits, friends
 - `SaveState`: userId, level, wave, hp, credits, upgrades, blades
-- `Purchase`: id, userId, itemID, amount, currency, status, paypalOrderId, raw
+- `Purchase`: id, userId, itemID, amount, currency, status, paypalOrderId, raw, grantStatus, grantedAt
 
 ## API
+- GET `/api/config/paypal` -> `{ clientId, env }`
+- GET `/api/config/facebook` -> `{ appId }`
 - POST `/api/auth/facebook` -> JWT
 - GET `/api/user/:id`
 - POST `/api/save` (JWT)
 - GET `/api/save/:userId` (JWT)
-- GET `/api/leaderboard/friends?userId=...`
-- POST `/api/payments/create`
-- POST `/api/payments/capture`
+- GET `/api/leaderboard/friends` (JWT)
+- POST `/api/payments/create` (JWT)
+- POST `/api/payments/capture` (JWT)
 - POST `/api/webhook/paypal`
 
 ## Deployment
@@ -53,7 +55,9 @@ See `backend/.env.example`.
 ## Security Notes
 - No PayPal secrets in frontend
 - All purchases verified server-side
-- Rate limiting on payment endpoints
+- Rate limiting on auth and payment endpoints
+- CORS restricted to configured origins
+- Idempotent item grants
 
 ## Testing
 - Use PayPal Sandbox accounts and the curl examples in `docs/curl-examples.sh`

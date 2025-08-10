@@ -20,7 +20,7 @@ export default class ShopScene extends Phaser.Scene {
         if (!auth?.user) { btn.setText('Login required'); return; }
         const payments = this.game.registry.get('payments');
         const amount = it.id === 'donation' ? 2.00 : undefined;
-        await payments.openPayment(it.id, auth.user.id, amount);
+        await payments.openPayment(it.id, amount);
       });
     });
 

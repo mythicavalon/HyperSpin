@@ -11,7 +11,9 @@ module.exports = (sequelize) => {
     currency: { type: DataTypes.STRING, defaultValue: 'USD' },
     status: { type: DataTypes.STRING, defaultValue: 'CREATED' },
     paypalOrderId: { type: DataTypes.STRING },
-    raw: { type: DataTypes.JSONB || DataTypes.JSON },
+    raw: { type: DataTypes.JSON },
+    grantStatus: { type: DataTypes.STRING, defaultValue: 'PENDING' },
+    grantedAt: { type: DataTypes.DATE, allowNull: true },
     createdAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
     updatedAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
   });

@@ -9,7 +9,7 @@ module.exports = (sequelize) => {
     displayName: { type: DataTypes.STRING },
     email: { type: DataTypes.STRING },
     profilePictureUrl: { type: DataTypes.STRING },
-    friends: { type: DataTypes.JSONB || DataTypes.JSON }, // array of fbIds
+    friends: { type: DataTypes.JSON }, // array of fbIds
     createdAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
     lastActive: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
     credits: { type: DataTypes.INTEGER, defaultValue: 0 },

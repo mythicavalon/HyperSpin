@@ -14,10 +14,13 @@ const API_BASE = '/api';
 
 let auth = { jwt: null, user: null };
 
-function initFacebook() {
+async function initFacebook() {
+  const res = await fetch(`${API_BASE}/config/facebook`);
+  const { appId } = await res.json();
   window.fbAsyncInit = function () {
+    // eslint-disable-next-line no-undef
     FB.init({
-      appId: 'YOUR_FB_APP_ID', // optional: can be overridden via data-attributes or env injection
+      appId: appId || undefined,
       cookie: true,
       xfbml: false,
       version: 'v19.0',
@@ -27,6 +30,7 @@ function initFacebook() {
 
 async function loginWithFacebook() {
   return new Promise((resolve) => {
+    // eslint-disable-next-line no-undef
     FB.login(async (response) => {
       if (response.authResponse) {
         const accessToken = response.authResponse.accessToken;
@@ -38,6 +42,7 @@ async function loginWithFacebook() {
         if (data.token) {
           auth.jwt = data.token;
           auth.user = data.user;
+          try { mergeAndSyncSave(loadSave()); } catch (_) {}
           resolve(true);
         } else {
           resolve(false);
@@ -54,13 +59,17 @@ function loadSave() {
   return local;
 }
 
+function persistLocal(save) {
+  localStorage.setItem('hs_save', JSON.stringify(save));
+}
+
 function mergeAndSyncSave(localSave) {
   if (!auth.jwt || !auth.user) return;
   fetch(`${API_BASE}/save/${auth.user.id}`, { headers: { Authorization: `Bearer ${auth.jwt}` } })
     .then((r) => r.json())
     .then((remote) => {
       const merged = { ...remote, ...localSave };
-      localStorage.setItem('hs_save', JSON.stringify(merged));
+      persistLocal(merged);
       return fetch(`${API_BASE}/save`, {
         method: 'POST', headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${auth.jwt}` },
         body: JSON.stringify(merged),
@@ -80,6 +89,7 @@ function createGame() {
     scene: [BootScene, MainMenuScene, GameScene, UIScene, PauseScene, DeathScene, UpgradesScene, ShopScene, LeaderboardScene],
     input: { activePointers: 3 },
   };
+  // eslint-disable-next-line no-undef
   const game = new Phaser.Game(config);
   game.registry.set('auth', auth);
   game.registry.set('payments', new PaymentsClient());
@@ -90,11 +100,20 @@ initFacebook();
 const localSave = loadSave();
 createGame();
 
-window.HyperSpin = { loginWithFacebook, Analytics, auth };
+window.HyperSpin = { loginWithFacebook, Analytics, auth, mergeAndSyncSave, loadSave };
 
 window.addEventListener('message', (e) => {
   if (e.data && e.data.type === 'purchase_completed') {
-    // Optionally update credits or trigger revive
     Analytics.purchaseCompleted(e.data.itemID);
   }
+});
+
+window.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    try { mergeAndSyncSave(loadSave()); } catch (_) {}
+  }
+});
+
+window.addEventListener('beforeunload', () => {
+  try { mergeAndSyncSave(loadSave()); } catch (_) {}
 });

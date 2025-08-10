@@ -4,7 +4,7 @@ export default class DeathScene extends Phaser.Scene {
   create() {
     const { width, height } = this.scale;
     const panel = this.add.rectangle(width/2, height/2, Math.min(420, width*0.9), 220, 0x121826).setStrokeStyle(2, 0x20304d);
-    const title = this.add.text(width/2, height/2 - 60, 'You Died', { fontSize: 28, color: '#eaf2ff' }).setOrigin(0.5);
+    this.add.text(width/2, height/2 - 60, 'You Died', { fontSize: 28, color: '#eaf2ff' }).setOrigin(0.5);
 
     let remaining = 8;
     const timerText = this.add.text(width/2, height/2 - 20, `Revive in ${remaining}s`, { fontSize: 18, color: '#eaf2ff' }).setOrigin(0.5);
@@ -20,7 +20,8 @@ export default class DeathScene extends Phaser.Scene {
       const auth = this.game.registry.get('auth');
       if (!auth?.user) { reviveBtn.setText('Login required'); return; }
       const payments = this.game.registry.get('payments');
-      const result = await payments.openPayment('revive', auth.user.id);
+      window.HyperSpin.Analytics.reviveAttempt(this.level);
+      const result = await payments.openPayment('revive');
       if (result.type === 'purchase_completed') {
         t.remove();
         this.scene.stop();

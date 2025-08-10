@@ -10,8 +10,8 @@ module.exports = (sequelize) => {
     wave: { type: DataTypes.INTEGER, defaultValue: 1 },
     hp: { type: DataTypes.INTEGER, defaultValue: 100 },
     credits: { type: DataTypes.INTEGER, defaultValue: 0 },
-    upgrades: { type: DataTypes.JSONB || DataTypes.JSON, defaultValue: {} },
-    blades: { type: DataTypes.JSONB || DataTypes.JSON, defaultValue: {} },
+    upgrades: { type: DataTypes.JSON, defaultValue: {} },
+    blades: { type: DataTypes.JSON, defaultValue: {} },
     lastSaveAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
   });
   return SaveState;
