@@ -9,3 +9,9 @@ a { color: #2f6feb; }
 /* Text helpers */
 .cyber { color: #7da7ff; }
 .warn { color: #ff8080; }
+
+/* Overlay add-ons */
+.auth-buttons button { background: #2f6feb; color: #eaf2ff; border: none; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+.auth-buttons button:disabled { opacity: 0.6; cursor: default; }
+.auth-buttons .welcome { margin-right: 8px; color: #eaf2ff; }
+.leaderboard ol { margin: 0; padding-left: 18px; }

@@ -5,10 +5,12 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize) => {
   const User = sequelize.define('User', {
     id: { type: DataTypes.UUID, primaryKey: true, defaultValue: DataTypes.UUIDV4 },
+    firebaseUid: { type: DataTypes.STRING, unique: true },
     fbId: { type: DataTypes.STRING, unique: true },
     displayName: { type: DataTypes.STRING },
     email: { type: DataTypes.STRING },
     profilePictureUrl: { type: DataTypes.STRING },
+    provider: { type: DataTypes.STRING },
     friends: { type: DataTypes.JSON }, // array of fbIds
     createdAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
     lastActive: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
