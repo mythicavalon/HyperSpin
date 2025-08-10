@@ -1,0 +1,40 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  background: #0b0f16;
+  color: #eaf2ff;
+  height: 100%;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, sans-serif;
+}
+#game-container {
+  width: 100vw;
+  height: 100vh;
+  touch-action: none;
+}
+.modal {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.6);
+}
+.modal.active { display: flex; }
+.modal .panel {
+  background: #121826;
+  border: 1px solid #20304d;
+  border-radius: 12px;
+  padding: 16px;
+  max-width: 420px;
+  width: 92vw;
+}
+.button {
+  background: #2f6feb;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 8px;
+  display: inline-block;
+}
+.button[disabled] {
+  background: #3a3f52;
+}
