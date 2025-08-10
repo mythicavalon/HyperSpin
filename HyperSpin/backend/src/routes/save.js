@@ -1,6 +1,6 @@
 const express = require('express');
 const { authRequired } = require('../middleware/auth');
-const { SaveState } = require('../models');
+const { SaveState, Score } = require('../models');
 
 const router = express.Router();
 
@@ -13,6 +13,17 @@ router.post('/', authRequired, async (req, res) => {
     save.lastSaveAt = new Date();
     await save.save();
   }
+  // Update global score for hyperspin game using level
+  try {
+    const scoreValue = Number.isFinite(payload.level) ? payload.level : (save.level || 0);
+    if (Score && Number.isFinite(scoreValue)) {
+      const [score] = await Score.findOrCreate({ where: { userId, gameKey: 'hyperspin' }, defaults: { userId, gameKey: 'hyperspin', score: scoreValue } });
+      if (!score.isNewRecord && score.score < scoreValue) {
+        score.score = scoreValue;
+        await score.save();
+      }
+    }
+  } catch (_) {}
   res.json({ ok: true });
 });
 

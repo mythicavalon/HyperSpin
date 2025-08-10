@@ -10,10 +10,18 @@
 <body>
   <div id="fb-root"></div>
   <div id="game-container"></div>
+  <div id="react-root"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.js"></script>
   <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
   <script type="module" src="/js/analytics.js"></script>
   <script type="module" src="/js/main.js"></script>
+
+  <!-- React + Firebase Auth overlay -->
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js"></script>
+  <script type="module" src="https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js"></script>
+  <script type="module" src="/js/react-overlay.js"></script>
 </body>
 </html>

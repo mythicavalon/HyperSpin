@@ -27,3 +27,12 @@ curl -s "$BASE/api/config/facebook" | jq .
 
 # 7) Leaderboard (JWT required)
 # curl -s "$BASE/api/leaderboard/friends" -H 'Authorization: Bearer '$JWT | jq .
+
+ID_TOKEN="REPLACE_WITH_FIREBASE_ID_TOKEN"
+BASE="http://localhost:8080/api"
+
+curl -s "$BASE/leaderboard/global?game=hyperspin" | jq .
+
+curl -s -H "Authorization: Bearer $ID_TOKEN" "$BASE/leaderboard/me?game=hyperspin" | jq .
+
+curl -s -X POST -H "Content-Type: application/json" -d '{"idToken":"'$ID_TOKEN'"}' "$BASE/auth/firebase" | jq .

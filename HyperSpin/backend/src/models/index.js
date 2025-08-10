@@ -29,6 +29,7 @@ db.sequelize = sequelize;
 db.User = require('./user')(sequelize);
 db.SaveState = require('./savestate')(sequelize);
 db.Purchase = require('./purchase')(sequelize);
+db.Score = require('./score')(sequelize);
 
 // Associations
 // User 1 - 1 SaveState
@@ -38,5 +39,9 @@ db.SaveState.belongsTo(db.User, { foreignKey: 'userId', as: 'user' });
 // User 1 - N Purchase
 db.User.hasMany(db.Purchase, { foreignKey: 'userId', as: 'purchases' });
 db.Purchase.belongsTo(db.User, { foreignKey: 'userId', as: 'user' });
+
+// User 1 - N Score
+db.User.hasMany(db.Score, { foreignKey: 'userId', as: 'scores' });
+db.Score.belongsTo(db.User, { foreignKey: 'userId', as: 'user' });
 
 module.exports = db;
